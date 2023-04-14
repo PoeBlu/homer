@@ -12,15 +12,21 @@ class ArticlePrinter(object):
         """This method is called to present overall article stats on a command line."""
         table_data = [
             [Color('{autocyan}Overall Stats{/autocyan}')],
-            ['Reading time', str(self.article.reading_time) + ' mins'],
+            ['Reading time', f'{str(self.article.reading_time)} mins'],
             ['Flesch Reading Ease', self.article.get_flesch_reading_score()],
-            ['Dale Chall Readability Score', self.article.get_dale_chall_reading_score()],
+            [
+                'Dale Chall Readability Score',
+                self.article.get_dale_chall_reading_score(),
+            ],
             ['Paragraphs', self.article.total_paragraphs],
             ['Avg sentences per paragraph', self.article.avg_sentences_per_para],
-            ['Total sentences in longest paragraph', self.article.len_of_longest_paragraph],
+            [
+                'Total sentences in longest paragraph',
+                self.article.len_of_longest_paragraph,
+            ],
             ['Sentences', self.article.total_sentences],
             ['Avg words per sentence', self.article.avg_words_per_sentence],
-            ['Longest sentence', "%s..." % str(self.article.longest_sentence)[0:30]],
+            ['Longest sentence', f"{str(self.article.longest_sentence)[:30]}..."],
             ['Words in longest sentence', self.article.len_of_longest_sentence],
             ['Words', self.article.total_words],
             ['"and" frequency"', self.article.get_and_frequency()],
@@ -55,13 +61,24 @@ class ArticlePrinter(object):
             avg_words_per_sentence = Color(
                 '{red}%s{/red}' % str(para.avg_words_per_sentence)) if para.avg_words_per_sentence > 25 else str(
                 para.avg_words_per_sentence)
-            table_data.append([item + 1,
-                               '{sentences} {sent_tag}. {words} {word_tag}. {avg_words} {avg_word_tag}. '
-                               '"{longest_sent}..." is the {long_tag} sentence.'.format(
-                                   sentences=sentences, sent_tag=sentence_tag, words=para.total_words,
-                                   word_tag=word_tag, avg_words=avg_words_per_sentence, avg_word_tag=avg_word_tag,
-                                   longest_sent=str(para.longest_sentence)[0:10], long_tag=long_tag
-                               )])
+            table_data.append(
+                [
+                    item + 1,
+                    (
+                        '{sentences} {sent_tag}. {words} {word_tag}. {avg_words} {avg_word_tag}. '
+                        '"{longest_sent}..." is the {long_tag} sentence.'.format(
+                            sentences=sentences,
+                            sent_tag=sentence_tag,
+                            words=para.total_words,
+                            word_tag=word_tag,
+                            avg_words=avg_words_per_sentence,
+                            avg_word_tag=avg_word_tag,
+                            longest_sent=str(para.longest_sentence)[:10],
+                            long_tag=long_tag,
+                        )
+                    ),
+                ]
+            )
             table_data.append(["", "Flesh Reading score={flesch_reading}, Dale Chall Readability= {dale_chall}".format(
                 flesch_reading=para.get_flesch_reading_score(), dale_chall=para.get_dale_chall_reading_score()
             )])
@@ -73,15 +90,14 @@ class ArticlePrinter(object):
         print(table_instance.table)
 
     def _print_detail_of(self, words_list, heading, display_count=True):
-        words = [str(word) for word in words_list]
-        if len(words) >= 1:
+        if words := [str(word) for word in words_list]:
             words_unique_list = list(set(words))
-            format_str = "{word} ({count})"
             if display_count:
+                format_str = "{word} ({count})"
                 msg = '{red} **- %s: %s {/red}\r\n' % (heading, ', '.join(format_str.format(word=str(word),
                                                            count=words.count(word)) for word in words_unique_list))
             else:
-                msg = '{red} **- %s: %s {/red}\r\n' % (heading, ', '.join(word for word in words_unique_list))
+                msg = '{red} **- %s: %s {/red}\r\n' % (heading, ', '.join(words_unique_list))
             print(Color(msg))
 
     def print_detail(self):

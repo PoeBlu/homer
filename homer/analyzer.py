@@ -139,11 +139,15 @@ class Paragraph(object):
 
     @property
     def total_words(self):
-        return sum([len(sentence) for sentence in self.sentences])
+        return sum(len(sentence) for sentence in self.sentences)
 
     @property
     def total_and_words(self):
-        return sum([sentence.total_and_words for sentence in self.sentences if sentence.total_and_words])
+        return sum(
+            sentence.total_and_words
+            for sentence in self.sentences
+            if sentence.total_and_words
+        )
 
     @property
     def avg_words_per_sentence(self):
@@ -211,7 +215,10 @@ class Article(object):
 
     @property
     def longest_sentence(self):
-        return max([paragraph.longest_sentence for paragraph in self._paragraphs], key=lambda sentence: len(sentence))
+        return max(
+            (paragraph.longest_sentence for paragraph in self._paragraphs),
+            key=lambda sentence: len(sentence),
+        )
 
     @property
     def len_of_longest_sentence(self):
@@ -219,7 +226,7 @@ class Article(object):
 
     @property
     def total_sentences(self):
-        return sum([len(paragraph) for paragraph in self.paragraphs])
+        return sum(len(paragraph) for paragraph in self.paragraphs)
 
     @property
     def total_paragraphs(self):
@@ -227,11 +234,11 @@ class Article(object):
 
     @property
     def total_words(self):
-        return sum([paragraph.total_words for paragraph in self.paragraphs])
+        return sum(paragraph.total_words for paragraph in self.paragraphs)
 
     @property
     def total_and_words(self):
-        return sum([paragraph.total_and_words for paragraph in self.paragraphs])
+        return sum(paragraph.total_and_words for paragraph in self.paragraphs)
 
     @property
     def reading_time(self):
@@ -273,7 +280,7 @@ class Article(object):
 
     def get_and_frequency(self):
         round_to_two_digits = 2
-        return str(round(self.total_and_words / self.total_words * 100, round_to_two_digits)) + " %"
+        return f"{str(round(self.total_and_words / self.total_words * 100, round_to_two_digits))} %"
 
     def ten_words_with_most_syllables(self):
         """This gets us 10 words with most syllables in a text"""
@@ -284,7 +291,9 @@ class Article(object):
             word = word.strip().lower()
             if word not in syllable_data:
                 try:
-                    syllable_data[word] = [len(list(y for y in x if y[-1].isdigit())) for x in d[word]][0]
+                    syllable_data[word] = [
+                        len([y for y in x if y[-1].isdigit()]) for x in d[word]
+                    ][0]
                 except KeyError:
                     pass  # Perhaps this word is not in the cmudict
         return [item[0] for item in list(reversed(sorted(syllable_data.items(), key=operator.itemgetter(1))))[:10]]

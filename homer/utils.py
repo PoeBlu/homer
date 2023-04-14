@@ -10,7 +10,7 @@ class FleschReading(object):
         self.difficulty_threshold = 60
 
     def is_difficult(self):
-        return True if self.score < self.difficulty_threshold else False
+        return self.score < self.difficulty_threshold
 
     def grade(self):
         if self.score < 30:
